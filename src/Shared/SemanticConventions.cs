@@ -56,6 +56,7 @@ internal static class SemanticConventions
     public const string AttributeDbCassandraKeyspace = "db.cassandra.keyspace";
     public const string AttributeDbHBaseNamespace = "db.hbase.namespace";
     public const string AttributeDbRedisFlagsKeyName = "db.redis.flags";
+    public const string AttributeDbRedisDatabaseIndex = "db.redis.database_index";
     public const string AttributeDbMongoDbCollection = "db.mongodb.collection";
 
     public const string AttributeRpcSystem = "rpc.system";
@@ -141,7 +142,6 @@ internal static class SemanticConventions
     // v1.26.0 Db
     public const string AttributeDbNamespace = "db.namespace";
     public const string AttributeDbOperationName = "db.operation.name";
-    public const string AttributeDbQueryText = "db.query.text";
 
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }
