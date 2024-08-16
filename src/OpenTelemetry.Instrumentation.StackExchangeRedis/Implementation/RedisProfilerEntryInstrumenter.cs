@@ -7,15 +7,18 @@ using System.Reflection;
 using System.Reflection.Emit;
 using OpenTelemetry.Trace;
 using StackExchange.Redis.Profiling;
+
 #if NET
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-#endif
 
+#endif
 namespace OpenTelemetry.Instrumentation.StackExchangeRedis.Implementation;
 
 internal static class RedisProfilerEntryInstrumenter
 {
+    private const int DefaultPort = 6379;
+
     private static readonly Lazy<Func<object, (string?, string?)>> MessageDataGetter = new(() =>
     {
         Type profiledCommandType = Type.GetType("StackExchange.Redis.Profiling.ProfiledCommand, StackExchange.Redis", throwOnError: true)!;
@@ -159,9 +162,12 @@ internal static class RedisProfilerEntryInstrumenter
                 activity?.SetTag(SemanticConventions.AttributeNetPeerPort, port);
 
                 meterTags?.Add(SemanticConventions.AttributeServerAddress, ip);
-                meterTags?.Add(SemanticConventions.AttributeServerPort, port);
                 meterTags?.Add(SemanticConventions.AttributeNetworkPeerAddress, ip);
-                meterTags?.Add(SemanticConventions.AttributeNetworkPeerPort, port);
+                if (port != DefaultPort)
+                {
+                    meterTags?.Add(SemanticConventions.AttributeServerPort, port);
+                    meterTags?.Add(SemanticConventions.AttributeNetworkPeerPort, port);
+                }
             }
             else if (command.EndPoint is DnsEndPoint dnsEndPoint)
             {
@@ -172,7 +178,10 @@ internal static class RedisProfilerEntryInstrumenter
                 activity?.SetTag(SemanticConventions.AttributeNetPeerPort, port);
 
                 meterTags?.Add(SemanticConventions.AttributeServerAddress, host);
-                meterTags?.Add(SemanticConventions.AttributeServerPort, port);
+                if (port != DefaultPort)
+                {
+                    meterTags?.Add(SemanticConventions.AttributeServerPort, port);
+                }
             }
             else
             {
