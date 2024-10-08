@@ -13,14 +13,14 @@ internal readonly struct TransportSendRequest
 {
     public TransportSendRequest()
     {
-#if !NET8_0_OR_GREATER
+#if !NET
         // Note: This is needed because < NET7 doesn't understand required.
         this.ItemType = string.Empty;
         this.ItemStream = default!;
 #endif
     }
 
-#if NET8_0_OR_GREATER
+#if NET
     public required string ItemType { get; init; }
 
     public required OneCollectorExporterSerializationFormatType ItemSerializationFormat { get; init; }
